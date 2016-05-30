@@ -1,25 +1,24 @@
 <head>
-  <title>simple</title>
+	<title>LeaderBoard</title>
 </head>
-
 <body>
-  <h1>Welcome to Meteor!</h1>
-
-  {{> hello}}
-  {{> info}}
+	<h1>LeaderBoard</h1>
+	{{> leaderboard }}
 </body>
 
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
-</template>
+<template name="leaderboard">
+	<ul>
+		{{#each player}}
+			<li class="player {{selectedClass}}" >{{name}}: {{score}} </li>
+		{{/each}}
+	</ul>
 
-<template name="info">
-  <h2>Learn Meteor!</h2>
-  <ul>
-    <li><a href="https://www.meteor.com/try">Do the Tutorial</a></li>
-    <li><a href="http://guide.meteor.com">Follow the Guide</a></li>
-    <li><a href="https://docs.meteor.com">Read the Docs</a></li>
-    <li><a href="https://forums.meteor.com">Discussions</a></li>
-  </ul>
+	{{#if selectedPlayer}}
+	<li>
+		<button class="increment"> Give +5 Points</button>
+		<button class="decrement"> Take -5 Points</button>
+	</li>
+	<li>Selected Player: {{selectedPlayer.name}} </li>
+	{{/if}}
+
 </template>
