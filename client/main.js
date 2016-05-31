@@ -3,11 +3,13 @@ import { ReactiveVar } from 'meteor/reactive-var';
 
 import './main.html';
 
+Meteor.subscribe('thePlayers');
 
 	Template.leaderboard.helpers({
 		
 		'player': function () {
-			return PlayersList.find({}, { sort: {score : -1, name: 1} });
+			var currentUserId = Meteor.userId();
+			return PlayersList.find({ createdBy : currentUserId}, { sort: {score : -1, name: 1} });
 		},
 		
 		'selectedClass': function () {
@@ -21,8 +23,7 @@ import './main.html';
 		'selectedPlayer': function () {
 			var selectedPlayer = Session.get('selectedPlayer');
 			return PlayersList.findOne({_id: selectedPlayer});
-		} 
-
+		},
 
 	});
 
@@ -35,12 +36,25 @@ import './main.html';
 
 		'click .increment' : function () {
 			var selectedPlayer = Session.get('selectedPlayer');
-			PlayersList.update({ _id: selectedPlayer }, { $inc: { score: 5} });
-			console.log(selectedPlayer);
+			Meteor.call('updateScore', selectedPlayer, 5);
 		},
 
 		'click .decrement' : function () {
 			var selectedPlayer = Session.get('selectedPlayer');
-			PlayersList.update({ _id: selectedPlayer }, { $inc: { score: -5} });
+			Meteor.call('updateScore', selectedPlayer, -5);
+		},
+
+		'click .remove' : function(){
+			var selectedPlayer = Session.get('selectedPlayer');
+			Meteor.call('removePlayer', selectedPlayer);
+		} 
+	});
+
+	Template.addPlayerForm.events({
+		'submit form': function(event){
+			event.preventDefault();
+			var playerNameVar = event.target.playerName.value;
+			Meteor.call('addPlayer', playerNameVar);
+			event.target.playerName.value = "";
 		}
 	});
